@@ -1,63 +1,131 @@
 import 'package:flutter/material.dart';
 
 class PinPad extends StatefulWidget {
+  PinPad({@required this.isSignUp});
+
+  final bool isSignUp;
   @override
   _PinPadState createState() => _PinPadState();
 }
 
 class _PinPadState extends State<PinPad> {
   List<int> _values;
-  String _input = "";
+  bool _isShowPinNumber = false;
 
   final TextStyle buttonTextStyle =
       TextStyle(fontSize: 30.0, color: Colors.white);
+
+  @override
+  void initState() {
+    super.initState();
+    _values = [];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: new Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-              child: Text(
-                "ENTER PIN",
-                style: TextStyle(fontSize: 20.0, color: Colors.white),
-              ),
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+            child: Text(
+              "Please Enter PIN",
+              style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: Iterable
-                      .generate(
-                          4,
-                          (n) => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Icon(
-                                n >= _input.length
-                                    ? Icons.panorama_fish_eye
-                                    : Icons.lens,
-                                size: 16.0,
-                                color: Colors.white,
-                              )))
-                      .toList()),
-            ),
-            _buildRow([1, 2, 3], context),
-            _buildRow([4, 5, 6], context),
-            _buildRow([7, 8, 9], context),
-            _buildLastRow()
-          ],
-        ),
+          ),
+          _buildPinHolder(),
+          _buildKeyPad(context)
+        ],
       ),
+    );
+  }
+
+  Widget _buildPinHolder() {
+    return !widget.isSignUp
+        ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: Iterable
+                    .generate(
+                        4,
+                        (n) => Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Icon(
+                              n >= _values.length
+                                  ? Icons.panorama_fish_eye
+                                  : Icons.lens,
+                              size: 16.0,
+                              color: Colors.white,
+                            )))
+                    .toList()),
+          )
+        : Stack(
+            alignment: const Alignment(0.5, 0.5),
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildOnePinNumber(0),
+                  _buildOnePinNumber(1),
+                  _buildOnePinNumber(2),
+                  _buildOnePinNumber(3),
+                ],
+              ),
+              _buildShowPinNumberIcon()
+            ],
+          );
+  }
+
+  Widget _buildShowPinNumberIcon() {
+    return Padding(
+      padding: EdgeInsets.only(left: 30.0),
+      child: IconButton(
+          icon: Icon(Icons.remove_red_eye),
+          onPressed: () {
+            setState(() {
+              _isShowPinNumber = !_isShowPinNumber;
+            });
+          }),
+    );
+  }
+
+  Widget _buildOnePinNumber(int i) {
+    String number;
+    if (_isShowPinNumber && _values.length > i) {
+      number = _values[i].toString();
+    } else if (!_isShowPinNumber && _values.length > i) {
+      number = "*";
+    } else {
+      number = " ";
+    }
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(5.0),
+      width: 20.0,
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.white))),
+      child:
+          Text(number, style: TextStyle(fontSize: 20.0, color: Colors.white)),
+    );
+  }
+
+  Widget _buildKeyPad(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        _buildRow([1, 2, 3], context),
+        _buildRow([4, 5, 6], context),
+        _buildRow([7, 8, 9], context),
+        _buildLastRow(context)
+      ],
     );
   }
 
   Widget _buildRow(List<int> inputs, BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: inputs
             .map((value) => FlatButton(
                   child: Text(
@@ -65,19 +133,20 @@ class _PinPadState extends State<PinPad> {
                     style: buttonTextStyle,
                   ),
                   highlightColor: Colors.transparent,
-                  onPressed: () => addInput(value.toString()),
+                  onPressed: () => _addInput(value, context),
                   shape: CircleBorder(),
-                  padding: EdgeInsets.all(23.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
                 ))
             .toList(),
       ),
     );
   }
 
-  Widget _buildLastRow() {
+  Widget _buildLastRow(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           FlatButton(
             child: Icon(
@@ -85,10 +154,10 @@ class _PinPadState extends State<PinPad> {
               color: Colors.white,
             ),
             highlightColor: Colors.transparent,
-            onPressed: () => clearInput(),
+            onPressed: () => _clearInput(),
             textColor: Colors.white,
             shape: CircleBorder(),
-            padding: EdgeInsets.all(23.0),
+            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           ),
           FlatButton(
             child: Text(
@@ -96,9 +165,9 @@ class _PinPadState extends State<PinPad> {
               style: buttonTextStyle,
             ),
             highlightColor: Colors.transparent,
-            onPressed: () => addInput("0"),
+            onPressed: () => _addInput(0, context),
             shape: CircleBorder(),
-            padding: EdgeInsets.all(23.0),
+            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           ),
           FlatButton(
             child: Icon(
@@ -106,42 +175,63 @@ class _PinPadState extends State<PinPad> {
               color: Colors.white,
             ),
             highlightColor: Colors.transparent,
-            onPressed: () => removeInput(),
+            onPressed: () => _removeInput(),
             textColor: Colors.white,
             shape: CircleBorder(),
-            padding: EdgeInsets.all(23.0),
+            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           ),
         ],
       ),
     );
   }
 
-  void addInput(String value) {
+  void _addInput(int value, BuildContext context) {
+    if (_values.length < 4) {
+      setState(() {
+        _values.add(value);
+        if (widget.isSignUp) {
+          if (_values.length == 4) {
+            _confirmPinNumber(context);
+          }
+        } else if (_values.length == 4) {}
+      });
+    }
+  }
+
+  void _removeInput() {
+    if (_values.length > 0) {
+      setState(() {
+        _values.removeLast();
+      });
+    }
+  }
+
+  void _clearInput() {
     setState(() {
-      if (_input.length == 0) {
-        _input = value;
-      } else if (_input.length <= 3) {
-        _input += value;
-        if (_input.length == 3) {
-          // validate pin
-        }
-      }
+      _values = [];
     });
   }
 
-  void removeInput() {
-    setState(() {
-      if (_input.length == 0) {
-        _input = "";
-      } else {
-        _input = _input.substring(0, _input.length - 1);
-      }
-    });
-  }
-
-  void clearInput() {
-    setState(() {
-      _input = "";
-    });
+  void _confirmPinNumber(BuildContext context) {
+    showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return new Container(
+              child: new Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 32.0, vertical: 16.0),
+                  child: ListTile(
+                    title: Text("Please confirm the PIN"),
+                    trailing: FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                              fontSize: 18.0),
+                        )),
+                  )));
+        });
   }
 }

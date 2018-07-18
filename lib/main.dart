@@ -14,7 +14,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         splashFactory: InkRipple.splashFactory,
       ),
-      home: PinPad(),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: PinPad(
+        isSignUp: true,
+      ),
     );
   }
 }
