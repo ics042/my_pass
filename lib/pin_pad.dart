@@ -128,15 +128,16 @@ class _PinPadState extends State<PinPad> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: inputs
             .map((value) => FlatButton(
-                  child: Text(
-                    value.toString(),
-                    style: buttonTextStyle,
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Text(
+                      value.toString(),
+                      style: buttonTextStyle,
+                    ),
                   ),
                   highlightColor: Colors.transparent,
                   onPressed: () => _addInput(value, context),
                   shape: CircleBorder(),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
                 ))
             .toList(),
       ),
@@ -149,36 +150,42 @@ class _PinPadState extends State<PinPad> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           FlatButton(
-            child: Icon(
-              Icons.refresh,
-              color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Icon(
+                Icons.refresh,
+                color: Colors.white,
+              ),
             ),
             highlightColor: Colors.transparent,
             onPressed: () => _clearInput(),
             textColor: Colors.white,
             shape: CircleBorder(),
-            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           ),
           FlatButton(
-            child: Text(
-              "0",
-              style: buttonTextStyle,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "0",
+                style: buttonTextStyle,
+              ),
             ),
             highlightColor: Colors.transparent,
             onPressed: () => _addInput(0, context),
             shape: CircleBorder(),
-            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           ),
           FlatButton(
-            child: Icon(
-              Icons.backspace,
-              color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Icon(
+                Icons.backspace,
+                color: Colors.white,
+              ),
             ),
             highlightColor: Colors.transparent,
             onPressed: () => _removeInput(),
             textColor: Colors.white,
             shape: CircleBorder(),
-            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           ),
         ],
       ),
