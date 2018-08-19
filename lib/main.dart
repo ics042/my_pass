@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:my_pass/pin_pad.dart';
 
-void main() => runApp(new MyApp());
+import 'package:my_pass/ui/pin_pad.dart';
+import 'package:my_pass/app.dart';
+
+void main() {
+  App app = App(
+    child: MyApp(),
+  );
+  app.db.init().then((v) => runApp(app));
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'My Pass',
-      theme: new ThemeData(
+      theme: ThemeData(
         primaryColor: const Color(0xFF00b33c),
         primarySwatch: Colors.blue,
         splashFactory: InkRipple.splashFactory,
