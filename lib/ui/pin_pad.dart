@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PinPad extends StatefulWidget {
-  PinPad({@required this.isSignUp});
+  PinPad([this.isSignUp = false]);
 
   final bool isSignUp;
   @override

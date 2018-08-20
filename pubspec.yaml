@@ -7,6 +7,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   sqflite: any
   path: any
+  async: ^2.0.7
 
 dev_dependencies:
   flutter_test:
